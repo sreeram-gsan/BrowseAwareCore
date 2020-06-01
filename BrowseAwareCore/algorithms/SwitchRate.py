@@ -5,7 +5,7 @@ from bokeh.plotting import figure
 class SwitchRate:
     
     def __init__(self):
-        logging.debug("Enter __init__")       
+        logging.info("Enter __init__")       
         pass
 
     def get_date_time_object(self,year, month, day, hour, minute, second):        

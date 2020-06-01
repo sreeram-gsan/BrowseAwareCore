@@ -4,7 +4,7 @@ from bokeh.plotting import figure
 class CandleSticks:
     
     def __init__(self,candle_width):
-        logging.debug("Enter __init__")
+        logging.info("Enter __init__")
         self.candle_width = candle_width               
         pass
 

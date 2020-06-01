@@ -7,7 +7,7 @@ import math
 class BollingerBands:
     
     def __init__(self,moving_average_window):
-        logging.debug("Enter __init__")        
+        logging.info("Enter __init__")        
         self.moving_average_window = moving_average_window       
         pass
     
