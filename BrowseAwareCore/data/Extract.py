@@ -8,15 +8,10 @@ import json
 class Extract:
     
     
-    def __init__(self,extract_data_from_tags):
-        self.TAG_RE = re.compile(r"<[^>]+>")
-        self.extract_data_from_tags = extract_data_from_tags
+    def __init__(self,input_url,topic_classification_service_url):
+        self.input_url = input_url
+        self.topic_classification_service_url = topic_classification_service_url
         pass
-
-    def remove_HTML_tags(self,text):
-        logging.info("Enter remove_HTML_tags")      
-        return TAG_RE.sub('', text)
-
 
     def clean_up(self,text):
         logging.info("Enter clean_up")     
@@ -33,35 +28,43 @@ class Extract:
             if (flag == 0):
                 res += i
             res += " "
+        logging.info("Exit clean_up")
         return res
 
-    def get_HTML(self,url):
-        logging.info("Enter get_HTML")     
-        page = requests.get(url) 
-        return BeautifulSoup(page.text, 'html.parser')
+    def extract_text(self):
+        logging.info("Enter extract")      
+                
+        res = requests.get(self.input_url)
+        html_page = res.content
+        soup = BeautifulSoup(html_page, 'html.parser')
+        text = soup.find_all(text=True)
 
+        output = ''
+        blacklist = [
+	        '[document]',
+	        'noscript',
+	        'header',
+	        'html',
+	        'meta',
+	        'head', 
+	        'input',
+	        'script',
+	        'style' #More tags needs to be added
+            ]
 
-    def get_text_from_HTML(self,html):
-        
-        result = ""
-        for tag in extract_data_from_tags:
-            result += soup.find(tag)
-      
-        description = soup3.findAll(attrs={"name":"description"})
-        if (len(description) > 0):
-            content = clean_up(str(desc[0]['content'].encode('utf-8')))
-            if (content is not None):
-                final_res+= content
-        else:
-            logging.debug("Description is Null")
-            
-        return result
+        for t in text:
+	        if t.parent.name not in blacklist:
+		        output += '{} '.format(t)
+        logging.debug("Extracted Text: ")
+        logging.debug(output)
+        return output
 
-
-    def get_category(input_url,topic_classification_service_url):      
-        logging.info("Enter get_category")      
-        extracted_text = extract_text_from_url(input_url)        
-        response = json.loads(requests.post(url=topic_classification_service_url,data=extracted_text).text)    
+    def get_category_of_url(self):      
+        logging.info("Enter get_category_of_url")      
+        extracted_text = self.extract_text()
+        response = requests.post(url=self.topic_classification_service_url,data=self.clean_up(extracted_text)).json()
         return response['category']
+
+
 
 
