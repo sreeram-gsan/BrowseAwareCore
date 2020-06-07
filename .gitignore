@@ -4,7 +4,9 @@
 *.log
 
 venv
+venv1
 __pycache__
 packages/BrowseAwareCore/dist
 packages/BrowseAwareCore/test
 packages/BrowseAwareCore/build
+build

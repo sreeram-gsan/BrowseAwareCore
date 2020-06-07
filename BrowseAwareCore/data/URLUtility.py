@@ -5,13 +5,15 @@ from bs4 import BeautifulSoup
 import json
 
 
-class Extract:
+class URLUtility:
     
     
-    def __init__(self,input_url,topic_classification_service_url):
-        self.input_url = input_url
-        self.topic_classification_service_url = topic_classification_service_url
+    def __init__(self):             
         pass
+
+    def set_topic_classification_url(self,url):
+        logging.info("Enter set_topic_classification_url")    
+        self.topic_classification_service_url = url
 
     def clean_up(self,text):
         logging.info("Enter clean_up")     
@@ -31,10 +33,10 @@ class Extract:
         logging.info("Exit clean_up")
         return res
 
-    def extract_text(self):
+    def extract_text(self,url):
         logging.info("Enter extract")      
                 
-        res = requests.get(self.input_url)
+        res = requests.get(url)
         html_page = res.content
         soup = BeautifulSoup(html_page, 'html.parser')
         text = soup.find_all(text=True)
@@ -59,9 +61,9 @@ class Extract:
         logging.debug(output)
         return output
 
-    def get_category_of_url(self):      
+    def get_category_of_url(self,url):      
         logging.info("Enter get_category_of_url")      
-        extracted_text = self.extract_text()
+        extracted_text = self.extract_text(url)
         response = requests.post(url=self.topic_classification_service_url,data=self.clean_up(extracted_text)).json()
         return response['category']
 
